@@ -1,5 +1,11 @@
 "use client";
-import { createContext, PropsWithChildren, useContext, useState } from "react";
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Responsive, User, UserBody, UserLogin } from "../types/types";
 import { useMutation } from "@/hooks/useMutation";
 import axios from "axios";
@@ -16,8 +22,51 @@ type UserContextType = {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>({
+    token: "",
+    userId: -1,
+    username: "",
+  });
   const router = useRouter();
+
+  useEffect(() => {
+    const tokenCookies = Cookies.get("token");
+    if (tokenCookies) {
+      mutateUser({ token: tokenCookies });
+    }
+
+    const tokenLocalStorage = localStorage.getItem("token");
+    if (tokenLocalStorage) {
+      Cookies.set("token", tokenLocalStorage, {
+        expires: 1,
+      });
+      mutateUser({ token: tokenLocalStorage });
+    }
+  }, []);
+
+  const { mutate: mutateUser } = useMutation<
+    Responsive<User>,
+    { token: string }
+  >({
+    mutationFn: async (data) => {
+      const res = await axios.get(`${envConfig.API_URL}/auth/user`, {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      });
+
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const token = Cookies.get("token");
+      setUser({
+        token: token!,
+        userId: data.body.userId,
+        username: data.body.username,
+      });
+    },
+  });
+
   const { mutate } = useMutation<Responsive<UserBody>, UserLogin>({
     mutationFn: async (data) => {
       const res = await axios.post(`${envConfig.API_URL}/auth/login`, data);
@@ -45,6 +94,8 @@ export function UserProvider({ children }: PropsWithChildren) {
       Cookies.set("token", data.body.token, {
         expires: 1,
       });
+      localStorage.setItem("token", data.body.token);
+      localStorage.setItem("user", JSON.stringify(data.body.user));
       router.push("/dashboard");
     },
   });
@@ -59,7 +110,11 @@ export function UserProvider({ children }: PropsWithChildren) {
 
   const logout = () => {
     Cookies.remove("token");
-    setUser(null);
+    setUser({
+      token: "",
+      userId: -1,
+      username: "",
+    });
     router.push("/auth/login");
   };
 
