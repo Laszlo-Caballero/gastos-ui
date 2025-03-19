@@ -26,6 +26,17 @@ export default async function DashboardPage() {
             Extra: {data.lastQuantity?.extra || "No extra this month"}
           </p>
         </CardLink>
+
+        <CardLink
+          header="Total Expenses this moth"
+          link="/dashboard/Expense"
+          linkTitle="View all Expenses this moth"
+          icon={<CashIcon />}
+        >
+          <p className="font-normal text-gray-500 dark:text-gray-400">
+            Total expense: {data.expenses?.total || "No expense this month"}
+          </p>
+        </CardLink>
         <CardLink
           header="Last Expense"
           link="/dashboard/Expense"
@@ -34,17 +45,18 @@ export default async function DashboardPage() {
         >
           <p className="font-normal text-gray-500 dark:text-gray-400">
             Expense Name:{" "}
-            {data.expenses?.expenseName || "No expense this month"}
+            {data.expenses?.lastExpense?.expenseName || "No expense this month"}
           </p>
           <p className="font-normal text-gray-500 dark:text-gray-400">
             {/* Extra: {data.extra} */}
             Expense Amount:{" "}
-            {data.expenses?.expenseAmount || "No expense this month"}
+            {data.expenses?.lastExpense?.expenseAmount ||
+              "No expense this month"}
           </p>
           <p className="mb-3 font-normal text-gray-500 dark:text-gray-400">
             {/* Extra: {data.extra} */}
             Expense Date:{" "}
-            {data.expenses?.expenseDate.split("T")[0] ||
+            {data.expenses?.lastExpense?.expenseDate.split("T")[0] ||
               "No expense this month"}
           </p>
         </CardLink>

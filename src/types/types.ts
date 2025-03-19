@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface User {
   userId: number;
   username: string;
@@ -32,7 +34,23 @@ export interface Expenses {
   expenseDate: string;
 }
 
+export interface ResponsiveMaximumQuantity {
+  maximumQuantities: MaximumQuantity[];
+  totalPages: number;
+}
+
 export interface ResumenBody {
   lastQuantity: MaximumQuantity | null;
-  expenses: Expenses | null;
+  expenses: {
+    total: number;
+    lastExpense: Expenses | null;
+  };
+}
+export interface ColumnDef<T> {
+  header?: string;
+  headerComponent?: () => ReactNode;
+  accessorKey?: keyof T;
+  cell?: (row: { row: T }) => ReactNode;
+  footer?: string;
+  footerComponent?: () => ReactNode;
 }

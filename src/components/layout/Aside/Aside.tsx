@@ -3,6 +3,9 @@ import AsideLink from "../AsideLink/AsideLink";
 import { HomeIcon } from "@/assets/icon/HomeIcon";
 import { DashboardIcon } from "@/assets/icon/DashboardIcon";
 import { OffIcon } from "@/assets/icon/OffIcon";
+import { CashIcon } from "@/assets/icon/CashIcon";
+import Image from "next/image";
+import UserIcon from "@/assets/images/bonnie-green.png";
 
 export default function Aside() {
   const { user, logout } = useUser();
@@ -21,6 +24,9 @@ export default function Aside() {
             <AsideLink to="/" icon={<HomeIcon />}>
               Home
             </AsideLink>
+            <AsideLink to="/dashboard/maximum-quantity" icon={<CashIcon />}>
+              Maximum Quantity
+            </AsideLink>
           </ul>
         </div>
 
@@ -31,10 +37,12 @@ export default function Aside() {
           >
             <span className="sr-only">Open user menu</span>
             <div className="flex items-center">
-              <img
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png"
+              <Image
+                src={UserIcon}
                 className="mr-3 w-8 h-8 rounded-full"
                 alt="Bonnie avatar"
+                width={32}
+                height={32}
               />
               <div className="text-left">
                 <div className="font-semibold leading-none text-gray-900 dark:text-white mb-0.5">

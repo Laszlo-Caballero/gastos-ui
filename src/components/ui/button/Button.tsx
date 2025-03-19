@@ -39,9 +39,15 @@ interface ButtonProps
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ colors, size, className, children, ...props }, ref) => {
     return (
-      <button ref={ref} className={cx(button({ colors, size }), className)}>
+      <button
+        ref={ref}
+        className={cx(button({ colors, size }), className)}
+        {...props}
+      >
         {children}
       </button>
     );
   }
 );
+
+Button.displayName = "Button";
